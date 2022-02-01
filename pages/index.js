@@ -1,11 +1,40 @@
 import NavBar from "../components/NavBar";
+import { GraphQLClient, gql } from "graphql-request";
+import Link from "next/link";
 
-export default function Home() {
+const graphcms = new GraphQLClient(
+  "https://api-us-east-1.graphcms.com/v2/ckyjg354o11vl01yy3in52e9d/master"
+);
+
+const QUERY = gql`
+  {
+    blogPosts {
+      id
+      slug
+      title
+      coverPhoto {
+        url
+      }
+    }
+  }
+`;
+
+export async function getStaticProps() {
+  const { blogPosts } = await graphcms.request(QUERY);
+
+  return {
+    props: {
+      blogPosts,
+    },
+  };
+}
+
+export default function Home({ blogPosts }) {
   return (
     <div className="w-screen h-full text-white">
       <NavBar />
       <div className="p-4 h-screen">
-        <div className="grid grid-cols-2 border-2 border-white items-center h-3/5">
+        <div className="grid grid-cols-2 items-center h-3/5">
           <div>
             <h2 className="text-pink-600 text-2xl font-extrabold">
               Hey! I'm Sirena Alyce
@@ -20,9 +49,9 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div className="border-2 border-white">
-          <div>
-            <h2 className="text-pink-600 text-2xl">About</h2>
+        <div className="mb-4">
+        <div>
+            <h2 className="text-black bg-pink-600 text-2xl p-1 mb-2 font-bold">About</h2>
           </div>
           <div>
             <p>
@@ -39,9 +68,11 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div className="border-2 border-white h-2/5">
-          <div className="border-2 border-white">
-            <h2 className="text-pink-600 text-2xl">Projects</h2>
+        <div className="h-2/5">
+          <div>
+            <h2 className="text-black bg-pink-600 text-2xl p-1 mb-2 font-bold">
+              Projects
+            </h2>
           </div>
           <div className="grid grid-cols-3 h-full content-center">
             <div className="border-2 border-pink-500">Project 1</div>
@@ -49,9 +80,22 @@ export default function Home() {
             <div className="border-2 border-pink-500">Project 3</div>
           </div>
         </div>
-        <div className="border-2 border-white h-1/5">
-          <div className="border-2 border-white">
-            <h2 className="text-pink-600 text-2xl">Latest Articles</h2>
+        <div className="h-1/5">
+          <div>
+            <h2 className="text-black bg-pink-600 p-1 mb-2 text-2xl font-bold">
+              Latest Articles
+            </h2>
+          </div>
+          <div className="grid grid-cols-2">
+            {blogPosts.slice(0, 2).map(({ id, title, slug }) => (
+              <div key={id}>
+                <h2 className="text-pink-600 text-3xl font-bold">
+                  <Link href={`/post/${slug}`}>
+                    <a>{title}</a>
+                  </Link>
+                </h2>
+              </div>
+            ))}
           </div>
         </div>
       </div>
