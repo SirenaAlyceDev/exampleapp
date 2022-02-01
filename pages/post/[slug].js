@@ -1,4 +1,5 @@
 import NavBar from "../../components/NavBar";
+import styles from "../../components/Post.module.css"
 import { GraphQLClient, gql } from "graphql-request";
 
 const graphcms = new GraphQLClient(
@@ -55,13 +56,10 @@ export default function Blog({ post }) {
   return (
     <div className="w-screen h-full text-white">
       <NavBar />
-      <div className="grid border-2 border-white h-56 content-center">
-        <h2 className="text-pink-600 text-9xl font-extrabold">Blog</h2>
-      </div>
-      <div>
-        <h2 className="text-pink-600 font-extrabold text-2xl">{post.title}</h2>
-        <p>{post.author.name}</p>
-        <div dangerouslySetInnerHTML={{ __html: post.content.html }} />
+      <div className="m-4">
+        <h2 className="text-pink-600 font-extrabold text-6xl">{post.title}</h2>
+        <p className="text-xs">{post.author.name}</p>
+        <div className={`post ${styles.post}`} dangerouslySetInnerHTML={{ __html: post.content.html }} />
       </div>
     </div>
   );
