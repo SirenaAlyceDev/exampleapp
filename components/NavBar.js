@@ -4,7 +4,9 @@ export default function NavBar() {
   return (
     <div className="w-screen grid grid-cols-2 p-2">
       <div>
-        <p>Logo</p>
+        <Link href="/">
+        <a className="text-pink-600 font-extrabold">SIRENA ALYCE</a>
+        </Link>
       </div>
       <div className="ml-auto">
         <ul className="grid grid-cols-3">

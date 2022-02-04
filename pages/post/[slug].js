@@ -52,7 +52,7 @@ export async function getStaticPaths() {
   };
 }
 
-export default function Blog({ post }) {
+export default function Post({ post }) {
   return (
     <div className="w-screen h-full text-white">
       <NavBar />

@@ -1,6 +1,7 @@
 import NavBar from "../components/NavBar";
 import { GraphQLClient, gql } from "graphql-request";
 import Link from "next/link";
+import Image from "next/image";
 
 const graphcms = new GraphQLClient(
   "https://api-us-east-1.graphcms.com/v2/ckyjg354o11vl01yy3in52e9d/master"
@@ -16,20 +17,29 @@ const QUERY = gql`
         url
       }
     }
+    projects {
+      id
+      title
+      slug
+      image {
+        url
+      }
+    }
   }
 `;
 
 export async function getStaticProps() {
-  const { blogPosts } = await graphcms.request(QUERY);
+  const { blogPosts, projects } = await graphcms.request(QUERY);
 
   return {
     props: {
       blogPosts,
+      projects
     },
   };
 }
 
-export default function Home({ blogPosts }) {
+export default function Home({ blogPosts, projects }) {
   return (
     <div className="w-screen h-full text-white">
       <NavBar />
@@ -68,16 +78,23 @@ export default function Home({ blogPosts }) {
             </p>
           </div>
         </div>
-        <div className="h-2/5">
+        <div className="h-3/5">
           <div>
-            <h2 className="text-black bg-pink-600 text-2xl p-1 mb-2 font-bold">
+            <h2 className="text-black bg-pink-600 text-2xl p-1 font-bold">
               Projects
             </h2>
           </div>
-          <div className="grid grid-cols-3 h-full content-center">
-            <div className="border-2 border-pink-500">Project 1</div>
-            <div className="border-2 border-pink-500">Project 2</div>
-            <div className="border-2 border-pink-500">Project 3</div>
+          <div className="grid grid-cols-3 h-full place-items-center">
+            {projects.slice(0, 3).map(({ id, title, slug, image }) => (
+              <div key={id} className="grid grid-cols-1">
+                <h2 className="text-pink-600 text-3xl font-bold">
+                  <Link href={`/project/${slug}`}>
+                    <a>{title}</a>
+                  </Link>
+                </h2>
+                <Image src={image.url} width={150} height={150} />
+              </div>
+            ))}
           </div>
         </div>
         <div className="h-1/5">
@@ -89,7 +106,7 @@ export default function Home({ blogPosts }) {
           <div className="grid grid-cols-2">
             {blogPosts.slice(0, 2).map(({ id, title, slug }) => (
               <div key={id}>
-                <h2 className="text-pink-600 text-3xl font-bold">
+                <h2 className="text-pink-600 text-2xl font-bold">
                   <Link href={`/post/${slug}`}>
                     <a>{title}</a>
                   </Link>
